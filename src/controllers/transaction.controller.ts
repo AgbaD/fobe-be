@@ -23,5 +23,21 @@ export class TransactionController{
             next(error)
         }
     };
+
+    async transactionWebhook (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            await transactionService.transactionWebhook(req.body)
+            res.status(200).json({
+                status: "success",
+                message: 'webhook complete',
+            });
+        } catch (error) {
+            next(error)
+        }
+    };
 }
 

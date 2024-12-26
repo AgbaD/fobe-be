@@ -11,7 +11,7 @@ export class AuthController{
     ) {
         try {
             const { email, password, firstname, lastname } = req.body; 
-            const user = await authService.registerUser(email, password, firstname, lastname)
+            const user = await authService.registerUser({email, password, firstname, lastname})
             res.status(201).json({
                 status: "success",
                 message: 'registration complete',
@@ -29,27 +29,10 @@ export class AuthController{
     ) {
         try {
           const { email, password } = req.body; 
-          const resp = await authService.loginUser(email, password)
+          const resp = await authService.loginUser({email, password})
           res.status(200).json({
               status: "success",
               message: 'login complete',
-              data: resp,
-          });
-        } catch (error) {
-          next(error)
-        }
-    };
-
-    async getAllProfiles (
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ) {
-        try {
-          const resp = await authService.getAllProfile()
-          res.status(200).json({
-              status: "success",
-              message: 'fetch complete',
               data: resp,
           });
         } catch (error) {

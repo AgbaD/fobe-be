@@ -17,7 +17,7 @@ import { Transaction } from './Transaction';
     @OneToOne(() => User, (user) => user.wallet, { eager: true })
     user: User;
   
-    @Column({ type: 'decimal' })
+    @Column({ default: 0})
     balance: number;
 
     @OneToMany(() => Transaction, (transaction) => transaction.senderWallet)

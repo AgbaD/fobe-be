@@ -39,11 +39,6 @@ export class WalletService {
     if (!userWallet) {
       throw new AppError('Something went wrong', 500)
     }
-
-    // userWallet.balance += amount
-    // await this.walletRepository.save(userWallet)
-
-    // return "ok"
     let paystackAmount = (amount * 100).toString();
     const data = await paystackService.createPayment({
       email: user.email,
@@ -58,14 +53,13 @@ export class WalletService {
       receiverWallet: userWallet,
       amount,
       type: "fund",
-      reference: data.reference,
-      completed: true,
+      reference: data.data.reference,
+      completed: false,
     });
   
     await this.transactionRepository.save(transaction);
 
     return data;
-
   }
 
   async transferFunds (

@@ -16,6 +16,27 @@ export class TransactionService {
     this.walletRepository = AppDataSource.getRepository(Wallet);
   }
 
+  async transactionWebhook (payload: any) {
+    if (payload.event == 'charge.success') {
+      const reference = payload.data.reference
+      const transaction = await this.transactionRepository.findOne({
+        where: { reference: reference},
+        relations: ['receiverWallet']
+      })
+      if (!transaction) return
+      const wallet = await this.walletRepository.findOne({
+        where: { id: transaction.receiverWallet.id}
+      })
+      if (!wallet) return
+      wallet.balance += transaction.amount
+      await this.walletRepository.save(wallet)
+
+      transaction.completed = true;
+      await this.transactionRepository.save(transaction)
+    }
+    return
+  }
+
   async getTransactionHistory (userId: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },

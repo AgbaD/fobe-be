@@ -7,6 +7,17 @@ import { Repository } from 'typeorm';
 import config from '../config';
 import { Wallet } from '../entities/Wallet';
 
+export interface RegisterUserDto {
+  email: string, 
+  password: string, 
+  firstname: string, 
+  lastname: string,
+}
+
+export interface LoginUserDto {
+  email: string, 
+  password: string,
+}
 
 export class AuthService {
   userRepository: Repository<User>;
@@ -17,7 +28,8 @@ export class AuthService {
     this.walletRepository = AppDataSource.getRepository(Wallet);
   }
 
-  async registerUser (email: string, password: string, firstname: string, lastname: string) {
+  async registerUser (payload: RegisterUserDto) {
+    const { email, password, firstname, lastname } = payload;
     const existingUser = await this.userRepository.findOne({ 
       where: { email: email }
     });
@@ -42,8 +54,8 @@ export class AuthService {
     return newUser;
   };
 
-  async loginUser(email: string, password: string) {
-  
+  async loginUser(payload: LoginUserDto) {
+    const { email, password } = payload;
     const user =  await this.userRepository.findOne({ 
       where: {email: email }
     });
@@ -63,12 +75,4 @@ export class AuthService {
     delete user.password;
     return {token, user};
   };
-
-  async getAllProfile() {
-    const users = await this.userRepository.find({
-      relations: ['wallet'],
-      order: { createdAt: 'DESC' },
-    })
-    return users;
-  }
 }

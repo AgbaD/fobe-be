@@ -4,7 +4,6 @@ import {
     Column,
     ManyToOne,
     CreateDateColumn,
-    JoinColumn,
   } from 'typeorm';
 import { Wallet } from './Wallet';
   
@@ -19,7 +18,7 @@ export class Transaction {
     @ManyToOne(() => Wallet, (wallet) => wallet.receivedTransactions)
     receiverWallet: Wallet;
   
-    @Column({ type: 'decimal' })
+    @Column({ default: 0})
     amount: number;
 
     @Column()
